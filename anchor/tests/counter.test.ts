@@ -42,7 +42,7 @@ describe('Voting', () => {
     console.log(poll)
 
     expect(poll.pollId.toNumber()).toEqual(1)
-    expect(poll.description).toEqual('MESSI or RONALDO?')
+    expect(poll.description).toEqual('Who is the GOAT?')
     expect(poll.pollStart.toNumber()).toBeLessThan(poll.pollEnd.toNumber())
   })
 
@@ -61,7 +61,7 @@ describe('Voting', () => {
     await votingProgram.methods.initializeCandidate('RONALDO', playerId).rpc()
 
     const [ronaldoAddress] = PublicKey.findProgramAddressSync(
-      [playerId.toArrayLike(Buffer, 'le', 8), Buffer.from('MESSI')],
+      [playerId.toArrayLike(Buffer, 'le', 8), Buffer.from('RONALDO')],
       votingAddress,
     )
 
@@ -71,6 +71,6 @@ describe('Voting', () => {
     console.log(ronaldoPlayer)
   })
 
-  it('vote', async () => {})
+  it('vote', async () => { })
 })
 
