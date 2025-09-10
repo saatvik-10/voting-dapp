@@ -71,6 +71,23 @@ describe('Voting', () => {
     console.log(ronaldoPlayer)
   })
 
-  it('vote', async () => { })
+  it('vote', async () => {
+    const playerId = new anchor.BN(1);
+
+    await votingProgram.methods.vote( 
+      'MESSI', playerId
+    ).rpc();
+
+    const [messiAddress] = PublicKey.findProgramAddressSync(
+      [playerId.toArrayLike(Buffer, 'le', 8), Buffer.from('MESSI')],
+      votingAddress,
+    )
+
+    const messiPlayer = await votingProgram.account.candidate.fetch(messiAddress)
+
+    console.log(messiPlayer)
+
+    expect(messiPlayer.candidateVotes.toNumber()).toEqual(1);
+  })
 })
 
