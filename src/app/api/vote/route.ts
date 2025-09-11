@@ -9,7 +9,7 @@ export const OPTIONS = GET
 
 export async function GET(request: Request) {
   const actionMetadata: ActionGetResponse = {
-    icon: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.gqindia.com%2Fget-smart%2Fcontent%2Fronaldo-vs-messi-and-the-merciful-end-of-the-goat-debate&psig=AOvVaw0gW8LEdh3y-0vKv7UdpSbL&ust=1757643542365000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCODr_crSz48DFQAAAAAdAAAAABA7',
+    icon: 'https://cdn-thegame.imago-images.com/wp-content/uploads/imago11280425-1160x1055.jpg',
     title: 'Who is the GOAT?',
     description: 'Messi or Ronaldo?',
     label: 'Vote',
@@ -18,12 +18,12 @@ export async function GET(request: Request) {
         {
           label: 'Messi',
           href: '/api/vote?candidate=Messi',
-          type: 'post',
+          type: 'transaction',
         },
         {
           label: 'Ronaldo',
           href: '/api/vote?candidate=Ronaldo',
-          type: 'post',
+          type: 'transaction',
         },
       ],
     },
@@ -34,10 +34,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const connection = new Connection('https://127.0.0.1:8899', 'confirmed')
-
-  const program: Program<Voting> = new Program(IDL, { connection })
-
   const url = new URL(request.url)
   const candidate = url.searchParams.get('candidate')
 
@@ -47,6 +43,9 @@ export async function POST(request: Request) {
       headers: ACTIONS_CORS_HEADERS,
     })
   }
+
+  const connection = new Connection('http://127.0.0.1:8899', 'confirmed')
+  const program: Program<Voting> = new Program(IDL, { connection })
 
   const body: ActionPostRequest = await request.json()
   let voter = new PublicKey(body.account)
