@@ -2,22 +2,22 @@ import * as anchor from '@coral-xyz/anchor'
 import { Program } from '@coral-xyz/anchor'
 import { PublicKey } from '@solana/web3.js'
 import type { Voting } from '../target/types/voting'
-import { BankrunProvider, startAnchor } from 'anchor-bankrun'
+// import { BankrunProvider, startAnchor } from 'anchor-bankrun'
 
 const IDL = require('../target/idl/voting.json')
 
-const votingAddress = new PublicKey('FqzkXZdwYjurnUKetJCAvaUw5WAqbwzU6gZEwydeEfqS')
+const votingAddress = new PublicKey('GSRW2QQB5Zc9cfi2Ao8jm3jaMC9aXpu64jnPeS6sBALM')
 
 describe('Voting', () => {
   let context
   let provider
-  let votingProgram
+  anchor.setProvider(anchor.AnchorProvider.env())
+  let votingProgram = anchor.workspace.Voting as Program<Voting>
 
   beforeAll(async () => {
-    context = await startAnchor('', [{ name: 'voting', programId: votingAddress }], [])
-    provider = new BankrunProvider(context)
-
-    votingProgram = new Program<Voting>(IDL, provider)
+    //   context = await startAnchor('', [{ name: 'voting', programId: votingAddress }], [])
+    //   provider = new BankrunProvider(context)
+    //   votingProgram = new Program<Voting>(IDL, provider)
   })
 
   it('Initialize Poll', async () => {
@@ -32,10 +32,7 @@ describe('Voting', () => {
       )
       .rpc()
 
-    const [pollAddress] = PublicKey.findProgramAddressSync(
-      [pollId.toArrayLike(Buffer, 'le', 8)],
-      votingAddress,
-    )
+    const [pollAddress] = PublicKey.findProgramAddressSync([pollId.toArrayLike(Buffer, 'le', 8)], votingAddress)
 
     const poll = await votingProgram.account.poll.fetch(pollAddress)
 
@@ -47,7 +44,7 @@ describe('Voting', () => {
   })
 
   it('Initialize Candidate', async () => {
-    const playerId = new anchor.BN(1);
+    const playerId = new anchor.BN(1)
 
     await votingProgram.methods.initializeCandidate('MESSI', playerId).rpc()
 
@@ -72,11 +69,9 @@ describe('Voting', () => {
   })
 
   it('vote', async () => {
-    const playerId = new anchor.BN(1);
+    const playerId = new anchor.BN(1)
 
-    await votingProgram.methods.vote( 
-      'MESSI', playerId
-    ).rpc();
+    await votingProgram.methods.vote('MESSI', playerId).rpc()
 
     const [messiAddress] = PublicKey.findProgramAddressSync(
       [playerId.toArrayLike(Buffer, 'le', 8), Buffer.from('MESSI')],
@@ -87,7 +82,6 @@ describe('Voting', () => {
 
     console.log(messiPlayer)
 
-    expect(messiPlayer.candidateVotes.toNumber()).toEqual(1);
+    expect(messiPlayer.candidateVotes.toNumber()).toEqual(1)
   })
 })
-
