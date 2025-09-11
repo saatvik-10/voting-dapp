@@ -18,12 +18,12 @@ export async function GET(request: Request) {
         {
           label: 'Messi',
           href: '/api/vote?candidate=Messi',
-          type: 'transaction',
+          type: 'post',
         },
         {
           label: 'Ronaldo',
           href: '/api/vote?candidate=Ronaldo',
-          type: 'transaction',
+          type: 'post',
         },
       ],
     },
